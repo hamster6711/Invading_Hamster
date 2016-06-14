@@ -1,0 +1,79 @@
+package main;
+
+
+import java.util.ArrayList;
+
+import coins.Coin;
+import constants.Constants;
+import hamsters.Hamster;
+import strawman.StrawMan;
+
+public class Main {
+	
+	// return true iff the straw man successfully scared away the invading hamster
+	// the attack range of a strawman is extended according to the attack bottom/width ratio
+	public static boolean caughtHamster(Hamster hamster){
+		double hamsterLeftX = hamster.getLeftPaw().getX();
+		double hamsterRightX = hamsterLeftX + hamster.getWidth();
+		double inBound = hamster.getWidth() * Constants.HAMSTER_WIDTH_THRESHOLD_RATIO;
+		double leftBound = StrawMan.getInstance().getLeftHand() - inBound;
+		double rightBound = StrawMan.getInstance().getRightHand() + inBound;
+		double upperBound = Constants.ATTACK_TOP_THRESHOLD;
+		double lowerBound = Constants.ATTACK_TOP_THRESHOLD * Constants.ATTACK_BOTTOM_THRESHOLD_RATIO;
+		double hamsterAltitude = hamster.getLeftPaw().getY();
+		
+		// the hamster falls in the calculated attack range of the straw man 
+		if (hamsterLeftX >= leftBound && hamsterRightX <= rightBound){
+			if (hamsterAltitude <= upperBound && hamsterAltitude >= lowerBound){
+				return true;	
+			}
+		}
+		return false;
+	}
+
+	//return true iff the straw man caught the falling coins
+	public boolean caughtCoin(Coin coin){
+		double coinCenterX = coin.getCenter().getX();
+		double coinLeft = coinCenterX - coin.getRadius() * Constants.COIN_WIDTH_THRESHOLD_RATIO;
+		double coinRight = coinCenterX + coin.getRadius() * Constants.COIN_WIDTH_THRESHOLD_RATIO;
+		double inBound = coin.getRadius() * Constants.COIN_WIDTH_THRESHOLD_RATIO;
+		double leftBound = StrawMan.getInstance().getLeftHand() - inBound;
+		double rightBound = StrawMan.getInstance().getRightHand() + inBound;
+		double upperBound = Constants.COIN_TOP_THRESHOLD;
+		double lowerBound = Constants.COIN_TOP_THRESHOLD * Constants.COIN_BOTTOM_THRESHOLD_RATIO;
+		double coinAltitude = coin.getCenter().getY() - coin.getRadius();
+		// the coin (with in bound ratio) falls in the catch range of the straw man
+		// the coin has the same bottom threshold as attack range
+		if (leftBound >= strawManLeft && rightBound <= strawManRight){
+			if (coinAltitude <= Constants.STRAW_MAN_HEIGHT + Constants.COIN_RANGE &&
+					coinAltitude >= Constants.ATTACK_TOP_THRESHOLD * Constants.ATTACK_BOTTOM_THRESHOLD_RATIO){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	// return true iff the poop hit the straw man
+	public boolean poopHit(){
+		return false;
+	}
+
+	// return an arraylist of alive hamsters
+	public ArrayList<Hamster> aliveHamsters(){
+		return null;
+	}
+	
+	// update the total number of coins straw man collected
+	public void updateCoins(){
+	}
+	
+	// return the total coins being collected by the straw man
+	public int totalCoins(){
+		return 0;
+	}
+	
+	// return true iff the game ends
+	public boolean endGame(){
+		return false;
+	}
+}

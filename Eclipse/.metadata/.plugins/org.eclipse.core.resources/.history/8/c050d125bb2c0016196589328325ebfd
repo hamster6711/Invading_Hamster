@@ -1,0 +1,11 @@
+package game.framework;
+
+import java.util.ArrayList;
+
+public class Animation {
+	// contain AnimFrame objects that contain image and duration it's displayed
+	private ArrayList frames;
+	private int currentFrame;
+	private long animTime; //long can hold more accurate nums
+	private long totalDuration;
+}

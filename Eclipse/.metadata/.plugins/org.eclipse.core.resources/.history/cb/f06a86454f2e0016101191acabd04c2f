@@ -1,0 +1,54 @@
+package game.constants;
+
+import game.poop.Poop;
+
+public class Constants {
+	/** Background image */
+	public static final int SKY_WIDTH = 957;
+	public static final int SKY_HEIGHT = 118;
+	
+	/** Canvas constants */
+	public static final int CANVAS_WIDTH = 800;
+	public static final int CANVAS_HEIGHT = 480;
+	public static final int PADDING = 5;
+
+	/** Threshold constants */
+	// hamster
+	public static final double ATTACK_WIDTH_RATIO = 0.13;
+	public static final double ATTACK_TOP_RATIO = 0.13;
+	public static final double ATTACK_BOTTOM_RATIO = 0.75;
+	// avoid range
+	public static final double AVOID_WIDTH_RATIO = 0.10;
+	public static final double AVOID_BOTTOM_RATIO = 0.08;
+	// coin -- to be edited
+	public static final double COIN_TOP_THRESHOLD = 3.5;
+	public static final double COIN_BOTTOM_THRESHOLD_RATIO = 0.13;
+	public static final double COIN_WIDTH_THRESHOLD_RATIO = 0.67;
+
+	/** constants for hamster */
+	public static final int MISSED_HAM_Y = 1000;
+	// hamster minion
+	public static final int HAMSTER_MINION_SPEED = 2;
+	public static final int HAMSTER_MINION_FLEE_SPEED = -2;
+	public static final int HAMSTER_MINION_WIDTH = 100;
+	public static final int HAMSTER_MINION_HEIGHT = 120;
+	
+	/** constants for straw-man */
+	public static final int STRAW_MAN_WIDTH = 100;
+	public static final int STRAW_MAN_HEIGHT = 330;
+	public static final int STRAW_MAN_SCALED_HEIGHT = 150;
+
+	/** constants for poop */
+	public static final Poop DEFAULT_POOP = new Poop(-1000, -1000);
+	public static final Poop DROPPED_POOP = new Poop(1000, 1000);
+	public static final int POOP_LOWER_BOUND = 220; // minimum height to drop poop
+	public static final int POOP_SPEED = 2;
+	public static final int POOP_WIDTH = 80;
+	public static final int POOP_HEIGHT = 80;
+
+	/** constants for coins -- to be edited */
+	public static final int SMALL_COIN_VALUE = 5;
+	public static final double SMALL_COIN_RADIUS = 1.0;
+	public static final int LARGE_COIN_VALUE = 10;
+	public static final double LARGE_COIN_RADIUS = 2.0;
+}

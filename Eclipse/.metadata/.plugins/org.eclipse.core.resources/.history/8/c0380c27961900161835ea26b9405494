@@ -1,0 +1,85 @@
+package hamsters;
+
+import java.awt.Point;
+import java.util.Date;
+
+public abstract class Hamster {
+	// global variable
+	private static int id = 0;
+	
+	// instance variable
+	private double speed; // need to reconsider this attribute
+	private Point leftPaw;
+	private double width;
+	private long birth;
+	private int hId;
+	
+	/**
+	 * construct new hamster object with the following attributes
+	 * 
+	 * @param speed
+	 * @param leftPaw
+	 * @param width
+	 */
+	public Hamster(Point leftPaw) {
+		this.leftPaw = leftPaw;
+		this.birth = new Date().getTime();
+		id += 1;
+		this.hId = id;
+	}
+
+	public double getSpeed() {
+		return this.speed;
+	}
+
+	public void setSpeed(double speed) {
+		this.speed = speed;
+	}
+	
+	public Point getLeftPaw() {
+		return this.leftPaw;
+	}
+
+	public void setLeftPaw(Point leftPaw) {
+		this.leftPaw = leftPaw;
+	}
+
+	public Point getRightPaw(){
+		Point rightPaw = new Point();
+		double x = this.leftPaw.getX();
+		x += this.width;
+		rightPaw.setLocation(x, this.leftPaw.getY());
+		return rightPaw;
+	}
+
+	public double getWidth() {
+		return this.width;
+	}
+	
+	public void setWidth(double width) {
+		this.width = width;
+	}
+	
+	public long getBirth() {
+		return this.birth;
+	}
+	
+	public int getId() {
+		return this.hId;
+	}
+	
+	// return the current position of the hamster
+	public Point currentPos(){
+		double x = this.leftPaw.x;
+		double y = this.leftPaw.y;
+		Point newPos = new Point();
+		long timePast = (new Date().getTime() - this.birth)/60; //time past in seconds
+		y -= timePast * this.speed;	
+		newPos.setLocation(x, y);
+		return newPos;
+	}
+	
+	//TODO
+	public void updatePosition(){
+	}
+}

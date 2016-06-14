@@ -1,0 +1,54 @@
+/**
+ * TODO: We may need to make it move. Need to be further edited
+ */
+package game.startingClass;
+
+import game.constants.Constants;
+
+public class Background {
+	private int bgX, bgY, speedX;
+
+	/**
+	 * @param bgX
+	 * @param bgY
+	 */
+	public Background(int bgX, int bgY) {
+		this.bgX = bgX;
+		this.bgY = bgY;
+		speedX = -2;
+	}
+
+	// image dimension is 2160*480
+	public void update() {
+		bgX += speedX;
+		
+		if(bgX <= -Constants.BACKGROUND_WIDTH){
+			bgX += 2 * Constants.BACKGROUND_WIDTH;
+		}
+	}
+
+	public int getBgX() {
+		return bgX;
+	}
+
+	public void setBgX(int bgX) {
+		this.bgX = bgX;
+	}
+
+	public int getBgY() {
+		return bgY;
+	}
+
+	public void setBgY(int bgY) {
+		this.bgY = bgY;
+	}
+
+	public int getSpeedX() {
+		return speedX;
+	}
+
+	public void setSpeedX(int speedX) {
+		this.speedX = speedX;
+	}
+	
+}

@@ -1,0 +1,24 @@
+/**
+ * TODO: We may need to make it move. Need to be further edited
+ */
+package game.startingClass;
+
+public class Background {
+	private int bgX, bgY, speedX;
+
+	/**
+	 * @param bgX
+	 * @param bgY
+	 */
+	public Background(int bgX, int bgY) {
+		this.bgX = bgX;
+		this.bgY = bgY;
+		speedX = 0;
+	}
+	
+	public void update() {
+		// TODO Auto-generated method stub
+
+	}
+	
+}

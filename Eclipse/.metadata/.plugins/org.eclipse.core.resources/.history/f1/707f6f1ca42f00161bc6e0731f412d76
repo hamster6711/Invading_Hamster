@@ -1,0 +1,20 @@
+package game.startingClass;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class stScareTimer extends TimerTask{
+	Timer timer;
+	
+	@Override
+	public void run() {
+		System.out.println("here");
+	}
+	
+	class scareTimer{
+	public scareTimer(int seconds){
+		timer = new Timer();
+		timer.schedule(new stScareTimer(), 1000 * seconds);
+		}
+	}
+}

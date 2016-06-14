@@ -1,0 +1,350 @@
+package game.startingClass;
+
+import java.applet.Applet;
+import java.awt.Color;
+import java.awt.Frame;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Random;
+
+import game.constants.Constants;
+import game.hamsters.Hamster;
+import game.hamsters.HamsterMinion;
+import game.poop.Poop;
+import game.strawman.StrawMan;
+import java.awt.Graphics;
+import java.awt.Image;
+import game.framework.Animation;
+
+public class StartingClass extends Applet implements Runnable, KeyListener {
+	/** game states */
+	enum GameState {
+		Running, Dead
+	}
+
+	GameState state = GameState.Running;
+	private int gameCount = 4;
+	/** image framework and background */
+	private Graphics second;
+	private URL base;
+	private Background bg1, bg2;
+	private Image image, background, life, dead, curL1, curL2, curL3;
+	private Life life1, life2, life3;
+	private int count = 0;
+	
+	/** Strawman, poop, hamsters */
+	private StrawMan strawman;
+	private Hamster h1, h2;
+	private Hamster test = new HamsterMinion(80, Constants.HAMSTER_MINION_HEIGHT); // TODO: need to be deleted
+	private ArrayList<Hamster> hamsList = Hamster.aliveHamsters();
+	private ArrayList<Hamster> hitList = new ArrayList<Hamster>();
+	private Poop poop = Constants.DEFAULT_POOP;
+	/** strawman animations */
+	private Image curStrawman, strawman1, strawman2, strawman3, strawman4;
+	protected Animation stStandAnim, stScareAnim;
+	private boolean strawScare = false;
+	/** hamster animation */
+	private Image hamsterIm;
+	/** Poop animation */
+	private Image poop1, poop2, poop3;
+	private Animation poopAnim;
+
+	// tested image
+	private Image hamFall, hamScared, hamFlee;
+	private Image poopFall, poopHit, poopMissed;
+
+	/** End game animation */
+	private Image endIm;
+
+	/**
+	 * Update the background using double buffering technique to prevent tearing
+	 * and flickering
+	 */
+	@Override
+	public void update(Graphics g) {
+		if (image == null) {
+			image = createImage(this.getWidth(), this.getHeight());
+			second = image.getGraphics();
+		}
+		second.setColor(getBackground());
+		second.fillRect(0, 0, getWidth(), getHeight());
+		second.setColor(getForeground());
+		paint(second);
+		g.drawImage(image, 0, 0, this);
+	}
+	
+	@Override
+	public void paint(Graphics g) {
+		// TODO: FIX IMAGES
+		if (state == GameState.Running) {
+			g.drawImage(background, bg1.getBgX(), bg1.getBgY(), this);
+			g.drawImage(background, bg2.getBgX(), bg2.getBgY(), this);
+			g.drawImage(curL1, life1.getX(), life1.getY(), this);
+			g.drawImage(curL2, life2.getX(), life2.getY(), this);
+			g.drawImage(curL3, life3.getX(), life3.getY(), this);
+			g.drawImage(curStrawman, strawman.getLeftX(), strawman.getHeight(), this);
+
+			for (Hamster ham : hamsList) {
+				poop = ham.getPoop();
+				g.drawImage(hamsterIm, ham.getLeftX(), ham.getLeftY() - ham.getHeight(), this);
+				g.drawImage(poopAnim.getImage(), poop.getX(), poop.getY(), this);
+			}
+			
+			if(gameCount == 3){
+				curL1 = dead;
+			} else if(gameCount == 2){
+				curL1 = dead;
+				curL2 = dead;
+			} else if(gameCount == 1){
+				curL1 = dead;
+				curL2 = dead;
+				curL3 = dead;
+			}
+		} else if (state == GameState.Dead) {
+			g.setColor(Color.BLACK);
+			g.fillRect(0, 0, 800, 480);
+			g.setColor(Color.WHITE);
+			g.drawString("Dead", 360, 240);
+			//g.drawImage(endIm, 1067, 480, this);
+		}
+	}
+
+	@Override
+	public void init() {
+		setSize(Constants.CANVAS_WIDTH, Constants.CANVAS_HEIGHT);
+		Color bgColor = new Color(127, 206, 239);
+		setBackground(bgColor);
+		setFocusable(true); // make sure when game starts, user inputs go
+							// directly into applet
+		addKeyListener(this);
+		Frame frame = (Frame) this.getParent().getParent();
+		frame.setTitle("Invading Hamster");
+		try {
+			base = getDocumentBase();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		// image setup
+		// background image
+		background = getImage(base, "data/background.png");
+		//life status
+		life = getImage(base, "data/life/straw_alive.png");
+		dead = getImage(base, "data/life/straw_dead.png");
+		curL1 = life;
+		curL2 = life;
+		curL3 = life;
+		//TODO
+		endIm = getImage(base, "data/cloud.png");
+
+		// animation for the standing strawman
+		strawman1 = getImage(base, "data/strawman/strawman.png");
+		strawman2 = getImage(base, "data/strawman/stand/eyes_closed.png");
+		stStandAnim = new Animation();
+		stStandAnim.addFrame(strawman1, 1000);
+		stStandAnim.addFrame(strawman2, 50);
+		stStandAnim.addFrame(strawman1, 50);
+
+		// strawman scare
+		strawman3 = getImage(base, "data/strawman/scare/eyes_sparkle.png");
+		strawman4 = getImage(base, "data/strawman/scare/scare.png");
+		stScareAnim = new Animation();
+		stScareAnim.addFrame(strawman3, 1000);
+		stScareAnim.addFrame(strawman4, 1000);
+
+		curStrawman = stStandAnim.getImage();
+
+		// hamster animation TODO
+		hamsterIm = getImage(base, "data/hamster1.png");
+
+		// poop animations
+		poop1 = getImage(base, "data/poop/poop1.png");
+		poop2 = getImage(base, "data/poop/poop2.png");
+		poop3 = getImage(base, "data/poop/poop3.png");
+		poopAnim = new Animation();
+		poopAnim.addFrame(poop2, 1000);
+		poopAnim.addFrame(poop1, 800);
+		poopAnim.addFrame(poop2, 500);
+		poopAnim.addFrame(poop1, 100);
+		poopAnim.addFrame(poop3, 1000);
+		poopAnim.addFrame(poop1, 100);
+	}
+
+	@Override
+	public void start() {
+		strawman = StrawMan.getInstance();
+		
+		Random rand = new Random();
+		new HamsterMinion(rand.nextInt(Constants.LIFE1_X), rand.nextInt(Constants.CANVAS_HEIGHT));
+
+		// start background
+		bg1 = new Background(0, 0);
+		bg2 = new Background(Constants.BG_WIDTH, 0);
+		
+		life1 = Life.getLife1();
+		life2 = Life.getLife2();
+		life3 = Life.getLife3();
+
+		Thread thread = new Thread(this);
+		thread.start();
+	}
+
+	@Override
+	public void stop() {
+		// TODO Auto-generated method stub
+		super.stop();
+	}
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+		super.destroy();
+	}
+
+	// TODO: scare animation does not work atm, to be fixed
+	/**
+	 * private void strawScare(Hamster hamster){ int leftX =
+	 * strawman.getLeftX(); int rightX = strawman.getRightX(); int hamY =
+	 * hamster.getLeftY(); int inBound = Math.round(new Float(hamster.getWidth()
+	 * * Constants.ATTACK_WIDTH_RATIO)); int leftBound = hamster.getLeftX() -
+	 * inBound; int rightBound = hamster.getRightX() + inBound; int lowerBound =
+	 * Math.round(new Float(Constants.STRAW_MAN_HEIGHT +
+	 * Constants.STRAW_MAN_SCALED_HEIGHT * Constants.ATTACK_BOTTOM_RATIO));
+	 * 
+	 * // if(hamster.isHit()){ // curStrawman = stScareAnim.getImage(); // }
+	 * //if (hamY >= 350 && hamY <= lowerBound) { if(leftX >= leftBound && leftX
+	 * <= rightBound){ curStrawman = stScareAnim.getImage(); } else if(rightX >=
+	 * leftBound && leftX <= rightBound){ curStrawman = stScareAnim.getImage();
+	 * //} } }
+	 **/
+
+	public void generateHam() {
+		Random rand = new Random();
+		if (count == 100) {
+			if (rand.nextBoolean()) {
+				new HamsterMinion(rand.nextInt(Constants.LIFE1_X), 
+						rand.nextInt(Constants.HAM_GEN_LBOUND));
+			} else {
+				new HamsterMinion(rand.nextInt(Constants.CANVAS_WIDTH - Constants.LIFE1_X),
+						rand.nextInt(Constants.HAM_GEN_LBOUND) + Constants.LIFE_Y);
+			}
+		count = 0;
+		}
+	}
+	
+	@Override
+	public void run() {
+		if (state == GameState.Running) {
+			while (true) {
+				strawman.update();
+				generateHam();
+				bg1.update();
+				bg2.update();
+
+				for (Iterator<Hamster> hamIterator = hamsList.iterator(); hamIterator.hasNext();) {
+					Hamster hamster = hamIterator.next();
+					poop = hamster.getPoop();
+
+					if (hamster.isHit()) {
+						hamster.flee();
+						if (!hitList.contains(hamster)) {
+							hitList.add(hamster);
+						}
+					} else {
+						// strawman missed hamster, hamster disappear, remove
+						// hamster
+						if (hamster.isMissed()) {
+							gameCount -= 1;
+							hamIterator.remove();
+						}
+					}
+					if (poop.isHit()) {
+						gameCount -= 1;
+						poop = Constants.HIT_POOP;
+					} else {
+					}
+
+					hamster.poop();
+					hamster.update();
+					poop.update();
+					animate();
+
+					// if poop hit strawman, gameCont -1
+
+					// if poop disappear, remove hamster
+					if (poop.getY() >= Constants.CANVAS_HEIGHT) {
+						hamIterator.remove();
+					}
+
+					// TODO: debug
+					// System.out.println("--------------"+ hamsList
+					// +"-------------");
+					// System.out.println("=============="+ hitList
+					// +"==============");
+					// System.out.println("X: " + hamster.getLeftX() + "\t" +
+					// "Y: " + hamster.getLeftY());
+					// System.out.println("--" + poop.getX() + " "+
+					// poop.getY()+ "\n");
+					// }
+				}
+				//System.out.println(gameCount);
+
+				hitList.clear();
+				repaint();
+				count += 1;
+				
+				try {
+					Thread.sleep(17);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+				if (gameCount <= 0) {
+					state = GameState.Dead;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Set how fast the images are alternated TODO: add hamster, poop, strawman
+	 */
+	public void animate() {
+		// stScareAnim.update(100);
+		stStandAnim.update(12);
+		poopAnim.update(10);
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_LEFT:
+			strawman.moveLeft();
+			break;
+		case KeyEvent.VK_RIGHT:
+			System.out.println("move right");
+			strawman.moveRight();
+			break;
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_LEFT:
+			strawman.stop();
+			break;
+		case KeyEvent.VK_RIGHT:
+			strawman.stop();
+			break;
+		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+}

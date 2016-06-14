@@ -1,0 +1,222 @@
+/**
+ * Hamster is treated as a rectangle, it uses the bottom left coordinate to position
+ * 
+ */
+
+package game.hamsters;
+
+import java.util.ArrayList;
+import java.util.Random;
+import java.lang.Math;
+import game.constants.Constants;
+import game.poop.Poop;
+import game.strawman.StrawMan;
+
+public abstract class Hamster {
+	/** global variables */
+	private static ArrayList<Hamster> hamsters = new ArrayList<Hamster>();
+
+	/** instance variables */
+	// hamster is initially at the top of the screen and random position along x
+	private int leftX;
+	private int leftY;
+	private int width;
+	private int height;
+	// positive speed indicates falling
+	private int speed;
+	// lower bound of y coordinate
+	private int lowerBound = Constants.CANVAS_HEIGHT - Constants.PADDING;
+	// default location of all hamster poop
+	private Poop poop = Constants.DEFAULT_POOP;
+	// a flag to indicate if the hamster is hit
+	private boolean missed = false;
+	// y coordinate of a hamster when it is hit, -1 indicates it hasn't been hit
+	private int hitY = -1;
+	// y coordinate of the poop, -1 indicate coordinates hasn't been generated
+	private int poopY = -1;
+	// a flag to indicate if the y coordinate of the poop has been generated
+	private boolean poopFlag = false;
+
+	// abstract methods
+	/** Set the flee speed of a hamster. */
+	abstract public void flee();
+
+	/**
+	 * Update the position of a hamster along y axis according to its speed
+	 */
+	public void update() {
+		if (leftY + speed >= lowerBound) {
+			speed = 0;
+			leftY = Constants.MISSED_HAM_Y;
+			missed = true;
+		} else {
+			leftY += speed;
+		}
+	}
+
+	/**
+	 * 
+	 * @return true iff the hamster is hit by the strawman
+	 */
+	public boolean isHit() {
+		int rightX = leftX + width;
+		int inBound = Math.round(new Float(width * Constants.ATTACK_WIDTH_RATIO));
+		int leftBound = StrawMan.getInstance().getLeftX() - inBound;
+		int rightBound = StrawMan.getInstance().getRightX() + inBound;
+		int upperBound = Math.round(
+				new Float(Constants.STRAW_MAN_HEIGHT - Constants.STRAW_MAN_SCALED_HEIGHT * Constants.ATTACK_TOP_RATIO));
+		int lowerBound = Math.round(new Float(
+				Constants.STRAW_MAN_HEIGHT + Constants.STRAW_MAN_SCALED_HEIGHT * Constants.ATTACK_BOTTOM_RATIO));
+
+		// the hamster falls in the calculated attack range of the straw man
+		if (leftY >= upperBound && leftY <= lowerBound) {
+			if (leftX >= leftBound && leftX <= rightBound) {
+				hitY = leftY;
+				return true;
+			} else if (rightX >= leftBound && rightX <= rightBound) {
+				hitY = leftY;
+				return true;
+			}
+		}
+		//TODO: debug
+		//System.out.println(inBound + " L: " + leftBound + " R: " + rightBound + " U: " + upperBound + " LO: " +lowerBound);
+		return false;
+	}
+
+	/**
+	 * Generate new poop for a hamster that has been hit
+	 */
+	public void poop() {
+		int poopX = getLeftX() + 1/2 * width;
+		getPoopY();
+		if (poopY > 0) {
+			// TODO: debug
+			// System.out.println("--" + poop.getX() + " "+ poop.getY()+ "\n");
+			if (this.getLeftY() <= poopY - speed && this.getLeftY() >= poopY + speed) {
+				poop = new Poop(poopX, poopY);
+				poop.setSpeed(2);
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @return true iff Y coordinate of the poop has been generated set the
+	 *         poopY to be this number
+	 */
+	public boolean getPoopY() {
+		Random rand = new Random();
+
+		if (hitY > 0 && poopFlag == false) {
+			poopY = Math.min(Constants.POOP_LOWER_BOUND, rand.nextInt(hitY));
+			poopFlag = true;
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Update rising speed.
+	 */
+	public void moveUp() {
+		speed = -3;
+	}
+
+	/**
+	 * Update the falling speed.
+	 */
+	public void moveDown(int newSpeed) {
+		speed = newSpeed;
+	}
+
+	/**
+	 * Stop the movement of a hamster.
+	 */
+	public void stop() {
+		speed = 0;
+	}
+
+	/**
+	 * construct new hamster object with the following attributes
+	 * 
+	 * @param leftX
+	 * @param leftY
+	 **/
+	public Hamster(int leftX, int leftY) {
+		this.leftX = leftX;
+		this.leftY = leftY;
+		hamsters.add(this);
+	}
+
+	/**
+	 * @return an arraylist of alive hamsters
+	 */
+	public static ArrayList<Hamster> aliveHamsters() {
+		return hamsters;
+	}
+
+	public int getLeftX() {
+		return this.leftX;
+	}
+
+	public void setLeftX(int leftX) {
+		this.leftX = leftX;
+	}
+
+	public int getLeftY() {
+		return this.leftY;
+	}
+
+	public void setLeftY(int leftY) {
+		this.leftY = leftY;
+	}
+
+	// TODO: check the redundancy of this function
+	public int getRightX() {
+		return leftX + width;
+	}
+
+	public int getSpeed() {
+		return this.speed;
+	}
+
+	public void setSpeed(int speed) {
+		this.speed = speed;
+	}
+
+	public int getWidth() {
+		return this.width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public int getHeight() {
+		return this.height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public Poop getPoop() {
+		return poop;
+	}
+
+	public boolean isMissed() {
+		return missed;
+	}
+
+	public int getHitY(){
+		return hitY;
+	}
+	// for testing purposes
+	@Override
+	public String toString() {
+		String left = new Integer(leftX).toString();
+		String right = new Integer(leftX + width).toString();
+		String height = new Integer(leftY).toString();
+		return ("Left paw: " + left + " Right paw:" + right + " Y coordinate:" + height + "\t");
+	}
+}

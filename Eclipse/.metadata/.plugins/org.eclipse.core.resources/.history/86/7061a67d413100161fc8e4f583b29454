@@ -1,0 +1,19 @@
+package game.startingClass;
+
+import game.strawman.StrawMan;
+import game.strawman.StrawMan.StrawManHolder;
+
+public class Life {
+	private int x, y;
+	
+	private Life() {
+	}
+
+	private static class LifeHolder {
+		private static final Life LIFE1 = new Life();
+	}
+
+	public static StrawMan getLife1() {
+		return LifeHolder.LIFE1;
+	}
+}

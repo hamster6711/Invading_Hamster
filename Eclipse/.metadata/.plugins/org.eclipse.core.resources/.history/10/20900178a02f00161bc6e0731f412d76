@@ -1,0 +1,19 @@
+package game.timer;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class stScareTimer extends TimerTask{
+	Timer timer;
+	
+	public stScareTimer(Timer timer){
+		this.timer = timer;
+	}
+	
+	@Override
+	public void run() {
+		Starting
+		timer.cancel();
+	}
+	
+}

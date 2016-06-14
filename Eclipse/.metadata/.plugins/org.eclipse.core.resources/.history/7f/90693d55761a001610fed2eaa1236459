@@ -1,0 +1,54 @@
+
+package main;
+
+import java.awt.Point;
+
+import constants.Constants;
+import hamsters.Hamster;
+import hamsters.HamsterMinion;
+import strawman.StrawMan;
+
+public class Test {
+	// return true iff the straw man successfully scared away the invading hamster
+	// TODO: the way of getting straw man's parameter is faulty
+	public static boolean caughtHamster(Hamster hamster){
+		double hamsterLeftX = hamster.getLeftPaw().getX();
+		double hamsterRightX = hamsterLeftX + hamster.getWidth();
+		double inBound = hamster.getWidth() * Constants.HAMSTER_WIDTH_THRESHOLD_RATIO;
+		double leftBound = StrawMan.getInstance().getLeftHand() - inBound;
+		double rightBound = StrawMan.getInstance().getRightHand() + inBound;
+		double upperBound = Constants.ATTACK_TOP_THRESHOLD;
+		double lowerBound = Constants.ATTACK_TOP_THRESHOLD * Constants.ATTACK_BOTTOM_THRESHOLD_RATIO;
+		double hamsterAltitude = hamster.getLeftPaw().getY();
+		
+		// the hamster (with in bound ratio) falls in the attack range of the straw man 
+		//System.out.println("left: " + leftBound + " right: " + rightBound + " top: " + upperBound + " bottom: " + lowerBound);
+		if (hamsterLeftX >= leftBound && hamsterRightX <= rightBound){
+			if (hamsterAltitude <= upperBound && hamsterAltitude >= lowerBound){
+				return true;	
+			}
+		}
+		return false;
+	}
+
+	public static void main(String[] args) throws InterruptedException{
+		// create a new straw man with left-most coordinate at location (2.5, 3.0), 
+		// right-most coordinate at location (4.5, 3.0)
+		StrawMan st = StrawMan.getInstance();
+		st.setLeftHand(2.5);
+		st.setSpeed(0.5); //not needed as this point of testing
+		
+		// create two hamsters with bottom left coordinate at location (1.0, 3.0), 
+		// right-most coordinate at location (4.5, 3.0)
+		Point aPos = new Point();
+		Point bPos = new Point();
+		aPos.setLocation(1.0, 3.0);
+		bPos.setLocation(2.5, 3.0);
+		HamsterMinion a = new HamsterMinion(aPos);
+		Thread.sleep(1000);
+		HamsterMinion b = new HamsterMinion(bPos);
+		System.out.println(a);
+		System.out.println(b);
+		System.out.println(caughtHamster(a));
+	}
+}

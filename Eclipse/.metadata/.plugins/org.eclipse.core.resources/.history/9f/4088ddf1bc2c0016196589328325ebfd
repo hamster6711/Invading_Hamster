@@ -1,0 +1,56 @@
+package game.framework;
+
+import java.awt.Image;
+import java.util.ArrayList;
+
+public class Animation {
+	/** instance variables */
+	// contain AnimFrame objects that contain image and duration it's displayed
+	private ArrayList frames;
+	// refers to the integer value index of the current frame in the ArrayList
+	private int currentFrame;
+	// keep track of how much time has elapsed since current image was displayed
+	// long take up more memory but hold more accurate numbers
+	private long animTime;
+	// the amount of time each frame (image) will be displayed for
+	private long totalDuration;
+	
+	public Animation(){
+		frames = new ArrayList();
+		totalDuration = 0;
+		
+		synchronized (this) {
+			animTime = 0;
+			currentFrame = 0;
+		}
+	}
+	
+	/** 
+	 * @param image
+	 * @param duration
+	 * 
+	 * Add an AnimFrame object and append it to frames ArrayList
+	 */
+	public synchronized void addFrame(Image image, long duration){
+		totalDuration += duration;
+		frames.add(new AnimFrame(image, totalDuration));
+	}
+	/**
+	 * @param elapsedTime
+	 * 
+	 * Switch frames as necessary since it is called repeatedly
+	 */
+	public synchronized void update(long elapsedTime){
+		if(frames.size() > 1){
+			animTime += elapsedTime;
+			if(animTime >= totalDuration){
+				animTime = animTime % totalDuration;
+				currentFrame = 0;
+			}
+			
+			while(animTime > geFrame(currentFrame).endTime){
+				currentFrame++;
+			}
+		}
+	}
+}
