@@ -17,7 +17,7 @@ import com.may.framework.Screen;
 import com.may.framework.implementation.constants.Constants;
 
 public class MainActivity extends AppCompatActivity implements Game{
-    AndroidFastRenderView renderView;
+    GameFastRenderView renderView;
     Graphics graphics;
     Audio audio;
     Input input;
@@ -44,10 +44,10 @@ public class MainActivity extends AppCompatActivity implements Game{
         float scaleX = (float) frameBufferWidth / size.x;
         float scaleY = (float) frameBufferHeight / size.y;
 
-        renderView = new AndroidFastRenderView(this, frameBuffer);
-        graphics = new AndroidGraphics(getAssets(), frameBuffer);
-        fileIO = new AndroidFileIO(this);
-        audio = new AndroidAudio(this);
+        renderView = new GameFastRenderView(this, frameBuffer);
+        graphics = new GameGraphics(getAssets(), frameBuffer);
+        fileIO = new GameFileIO(this);
+        audio = new GameAudio(this);
         input = new AndroidInput(this, renderView, scaleX, scaleY);
         screen = getInitScreen();
         setContentView(renderView);

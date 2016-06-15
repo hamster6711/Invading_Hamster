@@ -51,66 +51,83 @@ public class GameMusic implements Music, MediaPlayer.OnCompletionListener, Media
 
     @Override
     public void stop() {
+        if(this.mediaPlayer.isPlaying() == true){
+            this.mediaPlayer.stop();
 
+            synchronized (this){
+                isPrepared = false;
+            }
+        }
     }
 
     @Override
     public void pause() {
+        if(this.mediaPlayer.isPlaying()){
+            mediaPlayer.pause();
+        }
 
     }
 
     @Override
-    public void setLooping(boolean looping) {
+    public void setLooping(boolean isLooping) {
+        mediaPlayer.setLooping(isLooping);
 
     }
 
     @Override
     public void setVolume(float volume) {
-
+        this.mediaPlayer.setVolume(volume, volume);
     }
 
     @Override
     public boolean isPlaying() {
-        return false;
+        return this.mediaPlayer.isPlaying();
     }
 
     @Override
     public boolean isStopped() {
-        return false;
+        return !isPrepared;
     }
 
     @Override
     public boolean isLooping() {
-        return false;
+        return this.mediaPlayer.isLooping();
     }
 
     @Override
     public void dispose() {
-
+        if(this.mediaPlayer.isPlaying()){
+            this.mediaPlayer.stop();
+        }
+        this.mediaPlayer.release();
     }
 
     @Override
     public void seekBegin() {
-
+        mediaPlayer.seekTo(0);
     }
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-
+        synchronized (this){
+            isPrepared = false;
+        }
     }
 
     @Override
     public void onSeekComplete(MediaPlayer mp) {
-
+        //TODO: Auto-generated method
     }
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-
+        synchronized (this){
+            isPrepared = true;
+        }
     }
 
     @Override
     public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
-
+        //TODO: Auto-generated method
     }
 }
