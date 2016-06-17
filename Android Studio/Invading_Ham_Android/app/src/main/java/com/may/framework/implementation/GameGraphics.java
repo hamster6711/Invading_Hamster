@@ -102,20 +102,20 @@ public class GameGraphics implements Graphics {
     public void drawImage(Image image, int x, int y, int srcX, int srcY, int srcWidth, int srcHeight) {
         srcRect.left = srcX;
         srcRect.top = srcY;
-        srcRect.right = x + srcWidth;
-        srcRect.bottom = y + srcHeight;
+        srcRect.right = srcX + srcWidth;
+        srcRect.bottom = srcY + srcHeight;
 
-        dstRect.left = srcX;
-        dstRect.top = srcY;
+        dstRect.left = x;
+        dstRect.top = y;
         dstRect.right = x + srcWidth;
         dstRect.bottom = y + srcHeight;
 
-        canvas.drawBitmap(((GameImage) Image).bitmap, srcRect, dstRect, null);
+        canvas.drawBitmap(((GameImage) image).bitmap, srcRect, dstRect, null);
     }
 
     @Override
-    public void drawImage(Image Image, int x, int y) {
-        canvas.drawBitmap(((GameImage) Image).bitmap, x, y, null);
+    public void drawImage(Image image, int x, int y) {
+        canvas.drawBitmap(((GameImage) image).bitmap, x, y, null);
     }
 
     public void drawScaledImage(Image image, int x, int y, int width, int height, int srcX,
@@ -125,12 +125,12 @@ public class GameGraphics implements Graphics {
         srcRect.right = srcX + srcWidth;
         srcRect.bottom = srcY + srcHeight;
 
-        dstRect.left = srcX;
-        dstRect.top = srcY;
+        dstRect.left = x;
+        dstRect.top = y;
         dstRect.right = x + width;
         dstRect.bottom = y + height;
 
-        canvas.drawBitmap(((GameImage) Image).bitmap, srcRect, dstRect, null);
+        canvas.drawBitmap(((GameImage) image).bitmap, srcRect, dstRect, null);
 
     }
 

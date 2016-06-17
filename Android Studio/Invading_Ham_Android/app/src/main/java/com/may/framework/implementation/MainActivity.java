@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements Game{
         graphics = new GameGraphics(getAssets(), frameBuffer);
         fileIO = new GameFileIO(this);
         audio = new GameAudio(this);
-        input = new AndroidInput(this, renderView, scaleX, scaleY);
+        input = new GameInput(this, renderView, scaleX, scaleY);
         screen = getInitScreen();
         setContentView(renderView);
     }
