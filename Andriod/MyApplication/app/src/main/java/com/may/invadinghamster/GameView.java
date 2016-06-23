@@ -113,6 +113,7 @@ public class GameView extends SurfaceView implements Runnable {
         strawMan = StrawMan.getInstance();
         strawMan.setBitmap(context);
         strawMan.update(fps);
+        canvas.drawBitmap(strawMan.getBitmap(), strawMan.getLeftX(), strawMan.getHeight(), paint);
     }
 
 

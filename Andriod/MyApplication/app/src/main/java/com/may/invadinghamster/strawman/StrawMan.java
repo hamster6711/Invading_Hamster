@@ -69,6 +69,11 @@ public class StrawMan {
         // TODO: might not be needed
         // bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
     }
+
+    public Bitmap getBitmap(){
+        return bitmap;
+    }
+
     public int getSpeed() {
         return speed;
     }
