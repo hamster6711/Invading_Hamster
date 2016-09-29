@@ -1,2 +1,2 @@
 #Invading hamster
-#An android game written in Java with eclipse.
+#An simple game written in Java with eclipse.
